@@ -1,0 +1,74 @@
+menu "Example Configuration"
+
+config I2C_MASTER_SCL
+    int "SCL GPIO Num"
+    default 21
+    help
+        GPIO number for I2C SCL
+
+config I2C_MASTER_SDA
+    int "SDA GPIO Num"
+    default 22
+    help
+        GPIO number for I2C SDA
+
+config I2C_MASTER_FREQ_HZ
+    int "I2C Master Frequency (Hz)"
+    default 100000
+    help
+        I2C master clock frequency
+        
+config EXAMPLE_USE_CERT_BUNDLE
+        bool "Enable certificate bundle"
+        default y
+        depends on MBEDTLS_CERTIFICATE_BUNDLE
+        help
+            Enable trusted root certificate bundle. This approach allows to have
+            OTA updates functional with any public server without requirement
+            to explicitly add its server certificate.
+
+choice EXAMPLE_LCD_CONTROLLER
+        prompt "LCD controller model"
+        default EXAMPLE_LCD_CONTROLLER_ILI9341
+        help
+            Select LCD controller model
+
+        config EXAMPLE_LCD_CONTROLLER_ILI9341
+            bool "ILI9341"
+
+        config EXAMPLE_LCD_CONTROLLER_GC9A01
+            bool "GC9A01"
+endchoice
+
+config EXAMPLE_LCD_TOUCH_ENABLED
+        bool "Enable LCD touch"
+        default n
+        help
+            Enable this option if you wish to use display touch. You can select from touch controllers.
+
+choice EXAMPLE_LCD_TOUCH_CONTROLLER
+        prompt "LCD touch controller model"
+        depends on EXAMPLE_LCD_TOUCH_ENABLED
+        default EXAMPLE_LCD_TOUCH_CONTROLLER_STMPE610
+        help
+            Select LCD touch controller model
+
+config EXAMPLE_LCD_TOUCH_CONTROLLER_STMPE610
+            bool "STMPE610"
+            help
+                Touch controller STMPE610 connected via SPI.
+
+config EXAMPLE_LCD_TOUCH_CONTROLLER_XPT2046
+            bool "XPT2046"
+            help
+                Touch controller XPT2046 connected via SPI.
+endchoice
+
+config EXAMPLE_LCD_MIRROR_Y
+        int
+        default 1 if EXAMPLE_LCD_TOUCH_ENABLED && EXAMPLE_LCD_TOUCH_CONTROLLER_XPT2046
+        default 0
+        help
+            This value is 1 if XPT2046 touch controller is selected, 0 otherwise.
+
+endmenu
